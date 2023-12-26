@@ -80,9 +80,9 @@ class Cat(Pet):
     cat_behaviors = {
         "walking": Behavior("walking", [cat_animations.get("walk")], ["idle"], np.array([3, 0]), True),
         "sitting": Behavior("sitting", [cat_animations.get("sitting"), cat_animations.get("sitting"),
-                                        cat_animations.get("sitting_blink")],["lying", "idle"]),
+                                        cat_animations.get("sitting_blink")], ["lying", "idle"]),
         "lying": Behavior("lying", [cat_animations.get("lying"), cat_animations.get("lying"),
-                                    cat_animations.get("lying_blink")],["sleeping", "sitting"]),
+                                    cat_animations.get("lying_blink")], ["sleeping", "sitting"]),
         "sleeping": Behavior("sleeping", [cat_animations.get("sleeping")], ["lying"]),
         "idle": Behavior("idle", [cat_animations.get("idle"), cat_animations.get("idle_blink")], ["walking", "sitting"],
                          change_direction=True),
@@ -105,5 +105,7 @@ class Cat(Pet):
                 return Behavior("stand_up", [cat_animations.get("stand_up")], [next_behavior.name])
             case ("lying", "sitting"):
                 return Behavior("sit_up", [cat_animations.get("sit_up")], [next_behavior.name])
+            case ("lying", "sleeping"):
+                return Behavior("sleepy", [cat_animations.get("sleepy")], [next_behavior.name])
             case _:
                 return None
