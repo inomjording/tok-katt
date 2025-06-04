@@ -20,14 +20,24 @@ label.pack()
 class WindowPet:
     def __init__(self, pet):
         self.pet = pet
-        self.coordinates = np.array([0, window.winfo_screenheight() - 90])
+        self.coordinates = np.array([0, window.winfo_screenheight() - 96])
         self.update_position()
         self.timestamp = time.time()
+        self.dragging = False
+        self.drag_offset_x = 0
+        self.drag_offset_y = 0
+
+        # Bind mouse events for drag and drop
+        label.bind("<Button-1>", self.on_drag_start)
+        label.bind("<B1-Motion>", self.on_drag_motion)
+        label.bind("<ButtonRelease-1>", self.on_drag_end)
+
         window.after(0, self.update)
         window.mainloop()
 
     def update(self):
-        self.move()
+        if not self.dragging:
+            self.move()
         self.pet.queue_behavior()
 
         window.after(100, self.update)
@@ -35,6 +45,22 @@ class WindowPet:
     def move(self):
         self.coordinates = self.pet.move(self.coordinates)
         self.update_position()
+
+    def on_drag_start(self, event):
+        self.dragging = True
+        # Calculate the offset between mouse position and window position
+        self.drag_offset_x = event.x_root - self.coordinates[0]
+        self.drag_offset_y = event.y_root - self.coordinates[1]
+
+    def on_drag_motion(self, event):
+        if self.dragging:
+            # Update coordinates based on mouse position and offset
+            self.coordinates[0] = event.x_root - self.drag_offset_x
+            self.coordinates[1] = event.y_root - self.drag_offset_y
+            self.update_position()
+
+    def on_drag_end(self, event):
+        self.dragging = False
 
     def update_position(self):
         window.geometry("64x64+{x}+{y}".format(x=str(self.coordinates[0]), y=str(self.coordinates[1])))
