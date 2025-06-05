@@ -20,7 +20,7 @@ label.pack()
 class WindowPet:
     def __init__(self, pet):
         self.pet = pet
-        self.coordinates = np.array([0, window.winfo_screenheight() - 96])
+        self.coordinates = np.array([0, window.winfo_screenheight() - window.winfo_reqheight()])
         self.update_position()
         self.timestamp = time.time()
         self.dragging = False
